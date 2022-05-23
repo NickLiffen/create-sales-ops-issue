@@ -48,6 +48,8 @@ type Region =
   | "apac_e"
   | "apac_c";
 type Team = "se" | "ps";
+type Plan = "free" | "pro" | "enterprise";
+type Enterprise_Type = "enterprise" | "org";
 
 type IssueBodyTemplate = {
   client_name: string;
@@ -64,4 +66,8 @@ type IssueBodyTemplate = {
   core_languages: Languages[];
   current_sec_tools: SecurityTools[];
   current_ci_tools: CICDTools[];
+  start_date: string;
+  end_date: string;
+  plan: Plan;
+  enterprise_type: Enterprise_Type;
 };

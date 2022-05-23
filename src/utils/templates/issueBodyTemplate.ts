@@ -1,3 +1,7 @@
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export const issueBodyTemplate = (
   data: IssueBodyTemplate,
   approverInput: string,
@@ -30,6 +34,8 @@ export const issueBodyTemplate = (
   const ghaeCustomerResponse =
     data.instance_type === "GitHub AE" ? ":white_check_mark:" : ":x:";
 
+  const enterpriseType = capitalizeFirstLetter(data.enterprise_type);
+
   // Putting all of the data into a table so it is readable
   const table = `
  **Item** | **Description**
@@ -39,7 +45,9 @@ export const issueBodyTemplate = (
  **GHES Customer?:** | ${ghesCustomerResponse}
  **GHAE Customer?:** | ${ghaeCustomerResponse}
  **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
- **Orgs to Enable GHAS:** | ${org}
+ **${enterpriseType} to Enable GHAS on:** | ${org}
+ **Start Date of Trail:** | ${data.start_date}
+ **End Date of Trial:** | ${data.end_date}
  **Trial/Extension Length:** | ${data.trial_duration} days
  **Additional details:** | _(i.e. why does your customer need an extension)_
  **POC Issue:** | [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput})
