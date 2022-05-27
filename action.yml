@@ -22,6 +22,10 @@ outputs:
     description: 'The Issue Number Created in the Ops Repo'
   opsIssueURL:
     description: 'The Issue url Created in the Ops Repo'
+  opsGHECIssueNumber:
+    description: 'The Issue Number Created in the Ops Repo for a GHEC Trial'
+  opsGHECIssueURL:
+    description: 'The Issue url Created in the Ops Repo for a GHEC Trial'
 runs:
   using: 'node12'
   main: 'dist/index.js'

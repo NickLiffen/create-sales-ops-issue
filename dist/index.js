@@ -53423,15 +53423,17 @@ const run = async () => {
         const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHASIssueTitle, GHASIssueData);
         console.log(`The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`);
         console.log(`The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`);
+        core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
+        core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
         if (issueBody.plan === "team_free" || issueBody.plan === "other") {
             const GHECIssueData = await (0, utils_1.GHECTrialIssueBody)(issueBody, approverInput, issueNumberInput, ghas_sales_ops_issue_number);
             const GHECIssueTitle = await (0, utils_1.GHECTrialIssueTitle)(issueBody);
             const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHECIssueTitle, GHECIssueData);
             console.log(`The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`);
             console.log(`The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`);
+            core.setOutput("opsGHECIssueNumber", ghes_sales_ops_issue_number);
+            core.setOutput("opsGHECIssueURL", ghec_sales_ops_issue_url);
         }
-        core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
-        core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
     }
     catch (error) {
         console.error(error);

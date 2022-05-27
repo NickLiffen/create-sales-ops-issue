@@ -37,6 +37,9 @@ const run = async (): Promise<void> => {
       `The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`
     );
 
+    core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
+    core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
+
     if (issueBody.plan === "team_free" || issueBody.plan === "other") {
       const GHECIssueData = await GHECTrialIssueBody(
         issueBody,
@@ -56,10 +59,10 @@ const run = async (): Promise<void> => {
       console.log(
         `The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`
       );
-    }
 
-    core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
-    core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
+      core.setOutput("opsGHECIssueNumber", ghes_sales_ops_issue_number);
+      core.setOutput("opsGHECIssueURL", ghec_sales_ops_issue_url);
+    }
   } catch (error) {
     console.error(error);
   }
