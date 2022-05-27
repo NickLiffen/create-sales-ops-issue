@@ -55,6 +55,7 @@ type IssueBodyTemplate = {
   client_name: string;
   instance_type: Instance;
   github_org: string[];
+  github_enterprise: string[];
   trial_duration: number;
   team_responsbile: Team;
   region: Region;
@@ -70,4 +71,8 @@ type IssueBodyTemplate = {
   end_date: string;
   plan: Plan;
   enterprise_type: Enterprise_Type;
+  would_like_a_project_board: boolean;
+  team_responsible: string;
+  repo_url: string | null;
+  already_created_repo: boolean;
 };

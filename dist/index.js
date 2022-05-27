@@ -53488,12 +53488,6 @@ function capitalizeFirstLetter(string) {
 }
 const issueBodyTemplate = (data, approverInput, issueNumberInput) => {
     let orgs = "";
-    // Providing a readable structure for the orgs
-    data.github_org.map((org, index) => {
-        orgs += `**GitHub Org ${index + 1}**: ${org} <br /> `;
-    });
-    // As we provie orgs not repos, a message asking to enable on the enterprises.
-    const org = `${orgs} <br /> (**If possible**, enaling GHAS on the enterprise of these orgs would be great)`;
     // Providing a readable format for the PS Engineer
     const PSEngineer = data.ps_engineer
         ? `@${data.ps_engineer}`
@@ -53515,6 +53509,16 @@ const issueBodyTemplate = (data, approverInput, issueNumberInput) => {
     const endDate = data.end_date
         ? data.end_date
         : "N/A - Old Record, Please Check SF Manually";
+    // Working out if there is orgs or enterprises
+    const orgsOrEnterprise = !Array.isArray(data.github_org) || !data.github_org.length
+        ? data.github_enterprise
+        : data.github_org;
+    // Providing a readable structure for the orgs
+    orgsOrEnterprise.map((org, index) => {
+        orgs += `**GitHub ${enterpriseType} ${index + 1}**: ${org} <br /> `;
+    });
+    // As we provie orgs not repos, a message asking to enable on the enterprises.
+    const org = `${orgs} <br />`;
     // Putting all of the data into a table so it is readable
     const table = `
  **Item** | **Description**
