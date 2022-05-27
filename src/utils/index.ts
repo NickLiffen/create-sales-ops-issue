@@ -1,6 +1,15 @@
-import { issueBodyTemplate } from "./templates/issueBodyTemplate";
-import { issueTitleTemplate } from "./templates/issueTitleTemplate";
-
+import {
+  GHASTrialIssueBody,
+  GHASTrialIssueTitle,
+  GHECTrialIssueBody,
+  GHECTrialIssueTitle,
+} from "./templates/";
 import { createIssue } from "./createIssue";
 
-export { issueBodyTemplate, issueTitleTemplate, createIssue };
+export {
+  GHASTrialIssueBody,
+  GHASTrialIssueTitle,
+  GHECTrialIssueBody,
+  GHECTrialIssueTitle,
+  createIssue,
+};

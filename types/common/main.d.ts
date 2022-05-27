@@ -48,7 +48,7 @@ type Region =
   | "apac_e"
   | "apac_c";
 type Team = "se" | "ps";
-type Plan = "free" | "pro" | "enterprise";
+type Plan = "team_free" | "other" | "enterprise";
 type Enterprise_Type = "enterprise" | "org";
 
 type IssueBodyTemplate = {

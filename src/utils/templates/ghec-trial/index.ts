@@ -1,4 +1,4 @@
-import { title } from "./title";
-import { body } from "./body";
+import { GHECTrialIssueTitle } from "./title";
+import { GHECTrialIssueBody } from "./body";
 
-export { title, body };
+export { GHECTrialIssueTitle, GHECTrialIssueBody };

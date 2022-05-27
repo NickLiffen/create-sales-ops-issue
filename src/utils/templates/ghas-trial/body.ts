@@ -2,7 +2,7 @@ function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const issueBodyTemplate = (
+export const GHASTrialIssueBody = (
   data: IssueBodyTemplate,
   approverInput: string,
   issueNumberInput: string
@@ -51,43 +51,43 @@ export const issueBodyTemplate = (
 
   // Putting all of the data into a table so it is readable
   const table = `
- **Item** | **Description**
- :--: | :--
- **Client/Prospect:** | ${data.client_name}
- **GHEC Customer?:** | ${ghecCustomerResponse}
- **GHES Customer?:** | ${ghesCustomerResponse}
- **GHAE Customer?:** | ${ghaeCustomerResponse}
- **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
- **${enterpriseType} to Enable GHAS on:** | ${org}
- **Start Date of Trail:** | ${startDate}
- **End Date of Trial:** | ${endDate}
- **Trial/Extension Length:** | ${data.trial_duration} days
- **Additional details:** | _(i.e. why does your customer need an extension)_
- **POC Issue:** | [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput})
- **Salesforce POC Object:** | ${data.sfdc_poc_url}
- **Links:** | 
- **Tag:** | Sales Rep: @${data.sales_rep} <br /> Solutions Engineer: @${data.solution_engineer} <br /> Professional Services Engineer: ${PSEngineer}
- 
- Approved By: __@${approverInput}__
- 
- ---
- **Mention:** _@github/sales-support_ _@github/revenue_ (for :eyes: and :+1: on all day 46-90 requests)`;
+   **Item** | **Description**
+   :--: | :--
+   **Client/Prospect:** | ${data.client_name}
+   **GHEC Customer?:** | ${ghecCustomerResponse}
+   **GHES Customer?:** | ${ghesCustomerResponse}
+   **GHAE Customer?:** | ${ghaeCustomerResponse}
+   **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
+   **${enterpriseType} to Enable GHAS on:** | ${org}
+   **Start Date of Trail:** | ${startDate}
+   **End Date of Trial:** | ${endDate}
+   **Trial/Extension Length:** | ${data.trial_duration} days
+   **Additional details:** | _(i.e. why does your customer need an extension)_
+   **POC Issue:** | [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput})
+   **Salesforce POC Object:** | ${data.sfdc_poc_url}
+   **Links:** | 
+   **Tag:** | Sales Rep: @${data.sales_rep} <br /> Solutions Engineer: @${data.solution_engineer} <br /> Professional Services Engineer: ${PSEngineer}
+   
+   Approved By: __@${approverInput}__
+   
+   ---
+   **Mention:** _@github/sales-support_ _@github/revenue_ (for :eyes: and :+1: on all day 46-90 requests)`;
 
   // Formalising the whole issue response. Hiding some data at the bottom of the issue that is used downstream.
   const response = `
-  ${table} <br /><br /> 
-  <!--
-  \`\`\`json ghas_data
-  ${JSON.stringify(data, null, 2)}
-  \`\`\`
-  \`\`\`json approver_input
-  ${JSON.stringify({ approverInput }, null, 2)}
-  \`\`\`
-  \`\`\`json issue_number_input
-  ${JSON.stringify({ issueNumberInput }, null, 2)}
-  \`\`\`
-  -->
-  `;
+    ${table} <br /><br /> 
+    <!--
+    \`\`\`json ghas_data
+    ${JSON.stringify(data, null, 2)}
+    \`\`\`
+    \`\`\`json approver_input
+    ${JSON.stringify({ approverInput }, null, 2)}
+    \`\`\`
+    \`\`\`json issue_number_input
+    ${JSON.stringify({ issueNumberInput }, null, 2)}
+    \`\`\`
+    -->
+    `;
 
   console.log(
     "The final data which will will create in the issue is: ",

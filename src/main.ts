@@ -1,4 +1,10 @@
-import { issueBodyTemplate, issueTitleTemplate, createIssue } from "./utils";
+import {
+  GHASTrialIssueBody,
+  GHASTrialIssueTitle,
+  GHECTrialIssueBody,
+  GHECTrialIssueTitle,
+  createIssue,
+} from "./utils";
 
 import * as core from "@actions/core";
 
@@ -13,24 +19,47 @@ const run = async (): Promise<void> => {
       required: false,
     });
 
-    const issueData = await issueBodyTemplate(
+    const GHASIssueData = await GHASTrialIssueBody(
       issueBody,
       approverInput,
       issueNumberInput
     );
-    const issueTitle = await issueTitleTemplate(issueBody);
 
-    const [html_url, number] = await createIssue(
-      githubRepositoryInput,
-      issueTitle,
-      issueData
+    const GHASIssueTitle = await GHASTrialIssueTitle(issueBody);
+
+    const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] =
+      await createIssue(githubRepositoryInput, GHASIssueTitle, GHASIssueData);
+
+    console.log(
+      `The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`
+    );
+    console.log(
+      `The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`
     );
 
-    console.log(`The issue has been created here: ${html_url}`);
-    console.log(`The issue number is: ${number}`);
+    if (issueBody.plan === "team_free" || issueBody.plan === "other") {
+      const GHECIssueData = await GHECTrialIssueBody(
+        issueBody,
+        approverInput,
+        issueNumberInput,
+        ghas_sales_ops_issue_number
+      );
 
-    core.setOutput("opsIssueNumber", number);
-    core.setOutput("opsIssueURL", html_url);
+      const GHECIssueTitle = await GHECTrialIssueTitle(issueBody);
+
+      const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] =
+        await createIssue(githubRepositoryInput, GHECIssueTitle, GHECIssueData);
+
+      console.log(
+        `The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`
+      );
+      console.log(
+        `The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`
+      );
+    }
+
+    core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
+    core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
   } catch (error) {
     console.error(error);
   }
