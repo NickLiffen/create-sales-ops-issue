@@ -53418,13 +53418,20 @@ const run = async () => {
         const githubRepositoryInput = core.getInput("githubRepository", {
             required: false,
         });
-        const issueData = await (0, utils_1.issueBodyTemplate)(issueBody, approverInput, issueNumberInput);
-        const issueTitle = await (0, utils_1.issueTitleTemplate)(issueBody);
-        const [html_url, number] = await (0, utils_1.createIssue)(githubRepositoryInput, issueTitle, issueData);
-        console.log(`The issue has been created here: ${html_url}`);
-        console.log(`The issue number is: ${number}`);
-        core.setOutput("opsIssueNumber", number);
-        core.setOutput("opsIssueURL", html_url);
+        const GHASIssueData = await (0, utils_1.GHASTrialIssueBody)(issueBody, approverInput, issueNumberInput);
+        const GHASIssueTitle = await (0, utils_1.GHASTrialIssueTitle)(issueBody);
+        const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHASIssueTitle, GHASIssueData);
+        console.log(`The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`);
+        console.log(`The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`);
+        if (issueBody.plan === "team_free" || issueBody.plan === "other") {
+            const GHECIssueData = await (0, utils_1.GHECTrialIssueBody)(issueBody, approverInput, issueNumberInput, ghas_sales_ops_issue_number);
+            const GHECIssueTitle = await (0, utils_1.GHECTrialIssueTitle)(issueBody);
+            const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHECIssueTitle, GHECIssueData);
+            console.log(`The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`);
+            console.log(`The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`);
+        }
+        core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
+        core.setOutput("opsIssueURL", ghas_sales_ops_issue_url);
     }
     catch (error) {
         console.error(error);
@@ -53465,28 +53472,29 @@ exports.createIssue = createIssue;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createIssue = exports.issueTitleTemplate = exports.issueBodyTemplate = void 0;
-const issueBodyTemplate_1 = __nccwpck_require__(8470);
-Object.defineProperty(exports, "issueBodyTemplate", ({ enumerable: true, get: function () { return issueBodyTemplate_1.issueBodyTemplate; } }));
-const issueTitleTemplate_1 = __nccwpck_require__(4751);
-Object.defineProperty(exports, "issueTitleTemplate", ({ enumerable: true, get: function () { return issueTitleTemplate_1.issueTitleTemplate; } }));
+exports.createIssue = exports.GHECTrialIssueTitle = exports.GHECTrialIssueBody = exports.GHASTrialIssueTitle = exports.GHASTrialIssueBody = void 0;
+const templates_1 = __nccwpck_require__(6522);
+Object.defineProperty(exports, "GHASTrialIssueBody", ({ enumerable: true, get: function () { return templates_1.GHASTrialIssueBody; } }));
+Object.defineProperty(exports, "GHASTrialIssueTitle", ({ enumerable: true, get: function () { return templates_1.GHASTrialIssueTitle; } }));
+Object.defineProperty(exports, "GHECTrialIssueBody", ({ enumerable: true, get: function () { return templates_1.GHECTrialIssueBody; } }));
+Object.defineProperty(exports, "GHECTrialIssueTitle", ({ enumerable: true, get: function () { return templates_1.GHECTrialIssueTitle; } }));
 const createIssue_1 = __nccwpck_require__(7078);
 Object.defineProperty(exports, "createIssue", ({ enumerable: true, get: function () { return createIssue_1.createIssue; } }));
 
 
 /***/ }),
 
-/***/ 8470:
+/***/ 7850:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.issueBodyTemplate = void 0;
+exports.GHASTrialIssueBody = void 0;
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
-const issueBodyTemplate = (data, approverInput, issueNumberInput) => {
+const GHASTrialIssueBody = (data, approverInput, issueNumberInput) => {
     let orgs = "";
     // Providing a readable format for the PS Engineer
     const PSEngineer = data.ps_engineer
@@ -53521,59 +53529,203 @@ const issueBodyTemplate = (data, approverInput, issueNumberInput) => {
     const org = `${orgs} <br />`;
     // Putting all of the data into a table so it is readable
     const table = `
- **Item** | **Description**
- :--: | :--
- **Client/Prospect:** | ${data.client_name}
- **GHEC Customer?:** | ${ghecCustomerResponse}
- **GHES Customer?:** | ${ghesCustomerResponse}
- **GHAE Customer?:** | ${ghaeCustomerResponse}
- **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
- **${enterpriseType} to Enable GHAS on:** | ${org}
- **Start Date of Trail:** | ${startDate}
- **End Date of Trial:** | ${endDate}
- **Trial/Extension Length:** | ${data.trial_duration} days
- **Additional details:** | _(i.e. why does your customer need an extension)_
- **POC Issue:** | [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput})
- **Salesforce POC Object:** | ${data.sfdc_poc_url}
- **Links:** | 
- **Tag:** | Sales Rep: @${data.sales_rep} <br /> Solutions Engineer: @${data.solution_engineer} <br /> Professional Services Engineer: ${PSEngineer}
- 
- Approved By: __@${approverInput}__
- 
- ---
- **Mention:** _@github/sales-support_ _@github/revenue_ (for :eyes: and :+1: on all day 46-90 requests)`;
+   **Item** | **Description**
+   :--: | :--
+   **Client/Prospect:** | ${data.client_name}
+   **GHEC Customer?:** | ${ghecCustomerResponse}
+   **GHES Customer?:** | ${ghesCustomerResponse}
+   **GHAE Customer?:** | ${ghaeCustomerResponse}
+   **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
+   **${enterpriseType} to Enable GHAS on:** | ${org}
+   **Start Date of Trail:** | ${startDate}
+   **End Date of Trial:** | ${endDate}
+   **Trial/Extension Length:** | ${data.trial_duration} days
+   **Additional details:** | _(i.e. why does your customer need an extension)_
+   **POC Issue:** | [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput})
+   **Salesforce POC Object:** | ${data.sfdc_poc_url}
+   **Links:** | 
+   **Tag:** | Sales Rep: @${data.sales_rep} <br /> Solutions Engineer: @${data.solution_engineer} <br /> Professional Services Engineer: ${PSEngineer}
+   
+   Approved By: __@${approverInput}__
+   
+   ---
+   **Mention:** _@github/sales-support_ _@github/revenue_ (for :eyes: and :+1: on all day 46-90 requests)`;
     // Formalising the whole issue response. Hiding some data at the bottom of the issue that is used downstream.
     const response = `
-  ${table} <br /><br /> 
-  <!--
-  \`\`\`json ghas_data
-  ${JSON.stringify(data, null, 2)}
-  \`\`\`
-  \`\`\`json approver_input
-  ${JSON.stringify({ approverInput }, null, 2)}
-  \`\`\`
-  \`\`\`json issue_number_input
-  ${JSON.stringify({ issueNumberInput }, null, 2)}
-  \`\`\`
-  -->
-  `;
+    ${table} <br /><br /> 
+    <!--
+    \`\`\`json ghas_data
+    ${JSON.stringify(data, null, 2)}
+    \`\`\`
+    \`\`\`json approver_input
+    ${JSON.stringify({ approverInput }, null, 2)}
+    \`\`\`
+    \`\`\`json issue_number_input
+    ${JSON.stringify({ issueNumberInput }, null, 2)}
+    \`\`\`
+    -->
+    `;
     console.log("The final data which will will create in the issue is: ", response);
     return response;
 };
-exports.issueBodyTemplate = issueBodyTemplate;
+exports.GHASTrialIssueBody = GHASTrialIssueBody;
 
 
 /***/ }),
 
-/***/ 4751:
+/***/ 5949:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GHASTrialIssueBody = exports.GHASTrialIssueTitle = void 0;
+const title_1 = __nccwpck_require__(3708);
+Object.defineProperty(exports, "GHASTrialIssueTitle", ({ enumerable: true, get: function () { return title_1.GHASTrialIssueTitle; } }));
+const body_1 = __nccwpck_require__(7850);
+Object.defineProperty(exports, "GHASTrialIssueBody", ({ enumerable: true, get: function () { return body_1.GHASTrialIssueBody; } }));
+
+
+/***/ }),
+
+/***/ 3708:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.issueTitleTemplate = void 0;
-const issueTitleTemplate = ({ client_name, }) => ` :lock: Enable GitHub Advanced Security Trial: ${client_name} :lock:`;
-exports.issueTitleTemplate = issueTitleTemplate;
+exports.GHASTrialIssueTitle = void 0;
+const GHASTrialIssueTitle = ({ client_name, }) => ` :lock: Enable GitHub Advanced Security Trial: ${client_name} :lock:`;
+exports.GHASTrialIssueTitle = GHASTrialIssueTitle;
+
+
+/***/ }),
+
+/***/ 2880:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GHECTrialIssueBody = void 0;
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+const GHECTrialIssueBody = (data, approverInput, issueNumberInput, salesOpsIssueNumber) => {
+    let orgs = "";
+    // Providing a readable format for the PS Engineer
+    const PSEngineer = data.ps_engineer
+        ? `@${data.ps_engineer}`
+        : "N/A : No PS Engineer Assigned";
+    const enterpriseType = data.enterprise_type
+        ? capitalizeFirstLetter(data.enterprise_type)
+        : "Organisations";
+    const startDate = data.start_date
+        ? data.start_date
+        : "N/A - Old Record, Please Check SF Manually";
+    const endDate = data.end_date
+        ? data.end_date
+        : "N/A - Old Record, Please Check SF Manually";
+    // Working out if there is orgs or enterprises
+    const orgsOrEnterprise = !Array.isArray(data.github_org) || !data.github_org.length
+        ? data.github_enterprise
+        : data.github_org;
+    // Providing a readable structure for the orgs
+    orgsOrEnterprise.map((org, index) => {
+        orgs += `**GitHub ${enterpriseType} ${index + 1}**: ${org} <br /> `;
+    });
+    // As we provie orgs not repos, a message asking to enable on the enterprises.
+    const org = `${orgs} <br />`;
+    // Putting all of the data into a table so it is readable // https://github.com/github/sales-operations/issues/29732
+    const table = `
+   **Item** | **Description**
+   :--: | :--
+   **Client/Prospect:** | ${data.client_name}
+   **What type of Trial Request?** | Initial Request
+   **Main License Type?** | <li>- [x] __GHE Cloud (Single Org)__</li>
+   **Enterprise Account ?:** | Yes (see below)
+   **If an Enterprise Account is being requested:** | This is a GHE trial linked to a GHAS trial. There are some GHAS features at the enterprise lense that we would love customers to test. Thank you. 
+   **Any Additional Products Needed?** | Yes, GHAS. See the Sales Ops Ticket for GHAS here: [sales-operations/${salesOpsIssueNumber}](https://github.com/github/sales-operations/issues/${salesOpsIssueNumber}), the advanced security field ticket for GHAS here: [advanced-security-field/${issueNumberInput}](https://github.com/github/advanced-security-field/issues/${issueNumberInput}) and the Salesforce PoC object for GHAS here: ${data.sfdc_poc_url}.
+   **Additional Codespaces Trial Information:** | N/A
+   **Please list any existing trial Cloud Orgs or Server Orgs:** | ${org}
+   **Client / Prospect Admin Email?** | N/A (Automation can't do this right now, @${data.sales_rep} can you manually fill this in please)
+   **Start Date of Trail:** | ${startDate}
+   **End Date of Trial:** | ${endDate}
+   **Trial/Extension Length:** | ${data.trial_duration} days
+   **Links:** | 
+   **Tag:** | Sales Rep: @${data.sales_rep} <br /> Solutions Engineer: @${data.solution_engineer} <br /> Professional Services Engineer: ${PSEngineer} <br /> Sales Support: @github/sales-support <br /> Revenue: @github/revenue
+   
+   Approved By: __@${approverInput}__
+   
+   ---
+   `;
+    // Formalising the whole issue response. Hiding some data at the bottom of the issue that is used downstream.
+    const response = `
+    ${table} <br /><br /> 
+    <!--
+    \`\`\`json ghas_data
+    ${JSON.stringify(data, null, 2)}
+    \`\`\`
+    \`\`\`json approver_input
+    ${JSON.stringify({ approverInput }, null, 2)}
+    \`\`\`
+    \`\`\`json issue_number_input
+    ${JSON.stringify({ issueNumberInput }, null, 2)}
+    \`\`\`
+    \`\`\`json sales_ops_ghas_issue_number_input
+    ${JSON.stringify({ salesOpsIssueNumber }, null, 2)}
+    \`\`\`
+    -->
+    `;
+    console.log("The final data which will will create in the issue is: ", response);
+    return response;
+};
+exports.GHECTrialIssueBody = GHECTrialIssueBody;
+
+
+/***/ }),
+
+/***/ 3671:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GHECTrialIssueBody = exports.GHECTrialIssueTitle = void 0;
+const title_1 = __nccwpck_require__(2582);
+Object.defineProperty(exports, "GHECTrialIssueTitle", ({ enumerable: true, get: function () { return title_1.GHECTrialIssueTitle; } }));
+const body_1 = __nccwpck_require__(2880);
+Object.defineProperty(exports, "GHECTrialIssueBody", ({ enumerable: true, get: function () { return body_1.GHECTrialIssueBody; } }));
+
+
+/***/ }),
+
+/***/ 2582:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GHECTrialIssueTitle = void 0;
+const GHECTrialIssueTitle = ({ client_name, }) => ` :wave: Enable Enterprise Trial: ${client_name}`;
+exports.GHECTrialIssueTitle = GHECTrialIssueTitle;
+
+
+/***/ }),
+
+/***/ 6522:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GHECTrialIssueTitle = exports.GHECTrialIssueBody = exports.GHASTrialIssueTitle = exports.GHASTrialIssueBody = void 0;
+const ghas_trial_1 = __nccwpck_require__(5949);
+Object.defineProperty(exports, "GHASTrialIssueBody", ({ enumerable: true, get: function () { return ghas_trial_1.GHASTrialIssueBody; } }));
+Object.defineProperty(exports, "GHASTrialIssueTitle", ({ enumerable: true, get: function () { return ghas_trial_1.GHASTrialIssueTitle; } }));
+const ghec_trial_1 = __nccwpck_require__(3671);
+Object.defineProperty(exports, "GHECTrialIssueBody", ({ enumerable: true, get: function () { return ghec_trial_1.GHECTrialIssueBody; } }));
+Object.defineProperty(exports, "GHECTrialIssueTitle", ({ enumerable: true, get: function () { return ghec_trial_1.GHECTrialIssueTitle; } }));
 
 
 /***/ }),
