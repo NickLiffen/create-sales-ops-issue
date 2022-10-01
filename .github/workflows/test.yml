@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Parse Issue Body
-        uses: peter-murray/issue-body-parser-action@v1
+        uses: peter-murray/issue-body-parser-action@v2
         id: issue_body_parser
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
