@@ -10997,7 +10997,7 @@ const run = async () => {
         });
         const GHASIssueData = await (0, utils_1.GHASTrialIssueBody)(issueBody, approverInput, issueNumberInput);
         const GHASIssueTitle = await (0, utils_1.GHASTrialIssueTitle)(issueBody);
-        const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHASIssueTitle, GHASIssueData);
+        const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHASIssueTitle, GHASIssueData, issueBody.instance_type);
         console.log(`The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`);
         console.log(`The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`);
         core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
@@ -11005,7 +11005,7 @@ const run = async () => {
         if (issueBody.plan === "team_free" || issueBody.plan === "other") {
             const GHECIssueData = await (0, utils_1.GHECTrialIssueBody)(issueBody, approverInput, issueNumberInput, ghas_sales_ops_issue_number);
             const GHECIssueTitle = await (0, utils_1.GHECTrialIssueTitle)(issueBody);
-            const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHECIssueTitle, GHECIssueData);
+            const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] = await (0, utils_1.createIssue)(githubRepositoryInput, GHECIssueTitle, GHECIssueData, issueBody.instance_type);
             console.log(`The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`);
             console.log(`The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`);
             core.setOutput("opsGHECIssueNumber", ghes_sales_ops_issue_number);
@@ -11029,9 +11029,10 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createIssue = void 0;
 const action_1 = __nccwpck_require__(1231);
-const createIssue = async (githubRepository, issueTitle, issueBody) => {
+const createIssue = async (githubRepository, issueTitle, issueBody, instance_type) => {
     const octokit = new action_1.Octokit();
-    const [owner, repo] = githubRepository.split("/");
+    const [owner, repository] = githubRepository.split("/");
+    const repo = instance_type === "Azure DevOps" ? "advanced-security-field" : repository;
     const { data: { html_url, number }, } = await octokit.request("POST /repos/{owner}/{repo}/issues", {
         owner,
         repo,
@@ -11087,6 +11088,7 @@ const GHASTrialIssueBody = (data, approverInput, issueNumberInput) => {
         ? ":white_check_mark:"
         : ":x:";
     const ghaeCustomerResponse = data.instance_type === "GitHub AE" ? ":white_check_mark:" : ":x:";
+    const azureDevOpsCustomerResponse = data.instance_type === "Azure DevOps" ? ":white_check_mark:" : ":x:";
     const enterpriseType = data.enterprise_type
         ? capitalizeFirstLetter(data.enterprise_type)
         : "Organisations";
@@ -11114,6 +11116,7 @@ const GHASTrialIssueBody = (data, approverInput, issueNumberInput) => {
    **GHEC Customer?:** | ${ghecCustomerResponse}
    **GHES Customer?:** | ${ghesCustomerResponse}
    **GHAE Customer?:** | ${ghaeCustomerResponse}
+   **Azure DevOps Customer (GHAZDO)?:** | ${azureDevOpsCustomerResponse}
    **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
    **${enterpriseType} to Enable GHAS on:** | ${org}
    **Start Date of Trail:** | ${startDate}

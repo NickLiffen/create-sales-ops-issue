@@ -28,7 +28,12 @@ const run = async (): Promise<void> => {
     const GHASIssueTitle = await GHASTrialIssueTitle(issueBody);
 
     const [ghas_sales_ops_issue_url, ghas_sales_ops_issue_number] =
-      await createIssue(githubRepositoryInput, GHASIssueTitle, GHASIssueData);
+      await createIssue(
+        githubRepositoryInput,
+        GHASIssueTitle,
+        GHASIssueData,
+        issueBody.instance_type
+      );
 
     console.log(
       `The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`
@@ -51,7 +56,12 @@ const run = async (): Promise<void> => {
       const GHECIssueTitle = await GHECTrialIssueTitle(issueBody);
 
       const [ghec_sales_ops_issue_url, ghes_sales_ops_issue_number] =
-        await createIssue(githubRepositoryInput, GHECIssueTitle, GHECIssueData);
+        await createIssue(
+          githubRepositoryInput,
+          GHECIssueTitle,
+          GHECIssueData,
+          issueBody.instance_type
+        );
 
       console.log(
         `The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`

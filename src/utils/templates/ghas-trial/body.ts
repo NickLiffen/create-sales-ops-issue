@@ -24,6 +24,8 @@ export const GHASTrialIssueBody = (
       : ":x:";
   const ghaeCustomerResponse =
     data.instance_type === "GitHub AE" ? ":white_check_mark:" : ":x:";
+  const azureDevOpsCustomerResponse =
+    data.instance_type === "Azure DevOps" ? ":white_check_mark:" : ":x:";
 
   const enterpriseType = data.enterprise_type
     ? capitalizeFirstLetter(data.enterprise_type)
@@ -57,6 +59,7 @@ export const GHASTrialIssueBody = (
    **GHEC Customer?:** | ${ghecCustomerResponse}
    **GHES Customer?:** | ${ghesCustomerResponse}
    **GHAE Customer?:** | ${ghaeCustomerResponse}
+   **Azure DevOps Customer (GHAZDO)?:** | ${azureDevOpsCustomerResponse}
    **:stop_sign: Add-ons?** | <li>- [x] __Advanced Security__</li>
    **${enterpriseType} to Enable GHAS on:** | ${org}
    **Start Date of Trail:** | ${startDate}

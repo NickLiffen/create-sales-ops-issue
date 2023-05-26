@@ -3,10 +3,13 @@ import { Octokit } from "@octokit/action";
 export const createIssue = async (
   githubRepository: string,
   issueTitle: string,
-  issueBody: string
+  issueBody: string,
+  instance_type: Instance
 ): Promise<string[]> => {
   const octokit = new Octokit();
-  const [owner, repo] = githubRepository.split("/");
+  const [owner, repository] = githubRepository.split("/");
+  const repo =
+    instance_type === "Azure DevOps" ? "advanced-security-field" : repository;
   const {
     data: { html_url, number },
   } = await octokit.request("POST /repos/{owner}/{repo}/issues", {

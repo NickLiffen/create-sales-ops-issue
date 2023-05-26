@@ -32,7 +32,8 @@ type CICDTools =
 type Instance =
   | "GitHub Enterprise Server"
   | "GitHub Enterprise Cloud"
-  | "GitHub AE";
+  | "GitHub AE"
+  | "Azure DevOps";
 type Region =
   | "amer_e_east"
   | "amer_e_central"
