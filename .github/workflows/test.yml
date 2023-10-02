@@ -22,7 +22,7 @@ jobs:
         run: |
           echo ${{ steps.issue_body_parser.outputs.payload }}
       - name: Git Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Running a Test
         id: test
         uses: ./
