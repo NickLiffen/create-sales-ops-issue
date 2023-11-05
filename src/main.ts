@@ -11,7 +11,7 @@ import * as core from "@actions/core";
 const run = async (): Promise<void> => {
   try {
     const issueBody = JSON.parse(
-      core.getInput("issueBodyPayload", { required: false })
+      core.getInput("issueBodyPayload", { required: false }),
     ) as IssueBodyTemplate;
     const approverInput = core.getInput("approver", { required: false });
     const issueNumberInput = core.getInput("issueNumber", { required: false });
@@ -22,7 +22,7 @@ const run = async (): Promise<void> => {
     const GHASIssueData = await GHASTrialIssueBody(
       issueBody,
       approverInput,
-      issueNumberInput
+      issueNumberInput,
     );
 
     const GHASIssueTitle = await GHASTrialIssueTitle(issueBody);
@@ -32,14 +32,14 @@ const run = async (): Promise<void> => {
         githubRepositoryInput,
         GHASIssueTitle,
         GHASIssueData,
-        issueBody.instance_type
+        issueBody.instance_type,
       );
 
     console.log(
-      `The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`
+      `The issue url for the GHAS Trial has been created here: ${ghas_sales_ops_issue_url}`,
     );
     console.log(
-      `The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`
+      `The issue number for the GHAS Trial is: ${ghas_sales_ops_issue_number}`,
     );
 
     core.setOutput("opsIssueNumber", ghas_sales_ops_issue_number);
@@ -50,7 +50,7 @@ const run = async (): Promise<void> => {
         issueBody,
         approverInput,
         issueNumberInput,
-        ghas_sales_ops_issue_number
+        ghas_sales_ops_issue_number,
       );
 
       const GHECIssueTitle = await GHECTrialIssueTitle(issueBody);
@@ -60,14 +60,14 @@ const run = async (): Promise<void> => {
           githubRepositoryInput,
           GHECIssueTitle,
           GHECIssueData,
-          issueBody.instance_type
+          issueBody.instance_type,
         );
 
       console.log(
-        `The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`
+        `The issue url for the GHEC Trial has been created here: ${ghec_sales_ops_issue_url}`,
       );
       console.log(
-        `The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`
+        `The issue number for the GHEC Trial is: ${ghes_sales_ops_issue_number}`,
       );
 
       core.setOutput("opsGHECIssueNumber", ghes_sales_ops_issue_number);

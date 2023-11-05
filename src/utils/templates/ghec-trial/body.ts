@@ -6,7 +6,7 @@ export const GHECTrialIssueBody = (
   data: IssueBodyTemplate,
   approverInput: string,
   issueNumberInput: string,
-  salesOpsIssueNumber: string
+  salesOpsIssueNumber: string,
 ): string => {
   let orgs = "";
   // Providing a readable format for the PS Engineer
@@ -85,7 +85,7 @@ ${JSON.stringify({ salesOpsIssueNumber }, null, 2)}
 
   console.log(
     "The final data which will will create in the issue is: ",
-    response
+    response,
   );
 
   return response;

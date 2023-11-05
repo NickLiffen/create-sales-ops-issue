@@ -4,7 +4,7 @@ export const createIssue = async (
   githubRepository: string,
   issueTitle: string,
   issueBody: string,
-  instance_type: Instance
+  instance_type: Instance,
 ): Promise<string[]> => {
   const octokit = new Octokit();
   const [owner, repository] = githubRepository.split("/");
